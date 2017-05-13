@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Vérification</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+
+    <ion-item>
+      <ion-label floating>Code reçu par mail</ion-label>
+      <ion-input type="text" #code></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <div padding>
+    <button (click)="verify(code)" ion-button color="primary" block>Vérifier</button>
+    <button (click)="back()" ion-button color="light" block>Renvoyer le mail</button>
+  </div>
+
+
+</ion-content>

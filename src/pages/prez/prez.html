@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-title>
+    Présentation
+  </ion-title>
+</ion-header>
+<ion-content padding>
+
+  <ion-slides pager>
+    <ion-slide *ngFor="let slide of slides">
+      <h2 [style.background-color]="red">{{slide.title}} </h2>
+      <p [innerHTML]="slide.description"></p>
+      <img [src]="slide.image"/>
+    </ion-slide>
+  </ion-slides>
+
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button color="primary" (click)="skip()">Ignorer</button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
