@@ -6,14 +6,18 @@ import {MailConfirmComponent} from './mail-confirm/mail-confirm.component';
 import {BrowserModule} from '@angular/platform-browser';
 import {IonicModule} from 'ionic-angular';
 import {HttpModule} from '@angular/http';
+import {IonicStorageModule} from '@ionic/storage';
+import {AuthHttp} from './auth.http';
 
 @NgModule({
   imports: [BrowserModule,
     IonicModule.forRoot(LoginComponent),
     IonicModule.forRoot(MailConfirmComponent),
-    IonicModule.forRoot(CodeConfirmComponent), HttpModule],
+    IonicModule.forRoot(CodeConfirmComponent),
+    IonicStorageModule.forRoot(),
+    HttpModule],
   declarations: [LoginComponent, MailConfirmComponent, CodeConfirmComponent],
-  providers: [SecurityService],
+  providers: [SecurityService, AuthHttp],
   entryComponents: [
     LoginComponent
   ],

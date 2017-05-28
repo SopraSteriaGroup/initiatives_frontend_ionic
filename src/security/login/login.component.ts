@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController} from 'ionic-angular';
 import {SecurityService} from '../security.service';
-import {MailConfirmComponent} from '../mail-confirm/mail-confirm.component';
 
 @Component({
   selector: 'page-login',
@@ -16,7 +15,7 @@ export class LoginComponent {
 
   login() {
     this._securityService.login().subscribe(user => {
-      this.navCtrl.push(MailConfirmComponent);
+      //  this.navCtrl.push(MailConfirmComponent);
     });
   }
 
