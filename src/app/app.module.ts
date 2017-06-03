@@ -4,7 +4,6 @@ import {IonicApp, IonicErrorHandler, IonicModule} from 'ionic-angular';
 import {SplashScreen} from '@ionic-native/splash-screen';
 import {StatusBar} from '@ionic-native/status-bar';
 import {CloudModule, CloudSettings} from '@ionic/cloud-angular';
-
 import {SecurityModule} from '../security/security.module';
 import {MyApp} from './app.component';
 import {HomePage} from '../pages/home/home';

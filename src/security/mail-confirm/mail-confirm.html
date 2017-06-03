@@ -5,18 +5,13 @@
 </ion-header>
 
 <ion-content>
-
   <ion-list>
-
     <ion-item>
       <ion-label floating>Email:</ion-label>
-      <ion-input type="text" #email value="@soprasteria.com"></ion-input>
+      <ion-input type="text" [(ngModel)]="email"></ion-input>
     </ion-item>
   </ion-list>
-
   <div padding>
-    <button (click)="send(email)" ion-button color="primary" block>Envoyer</button>
+    <button (click)="send()" ion-button color="primary" block>Envoyer</button>
   </div>
-
-
 </ion-content>

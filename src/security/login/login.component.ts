@@ -1,7 +1,9 @@
 import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
+import {IonicPage, NavController} from 'ionic-angular';
 import {SecurityService} from '../security.service';
+import {MailConfirmComponent} from '../mail-confirm/mail-confirm.component';
 
+@IonicPage()
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
@@ -15,12 +17,20 @@ export class LoginComponent {
 
   login() {
     this._securityService.login().subscribe(user => {
-      //  this.navCtrl.push(MailConfirmComponent);
-    });
+        alert(user);
+      },
+      err => {
+        if (err.status === 401) {
+          this.navCtrl.push(MailConfirmComponent);
+        }
+      });
+  }
+
+  register() {
+    this.navCtrl.push(MailConfirmComponent);
   }
 
   logout() {
     this._securityService.logout();
   }
-
 }

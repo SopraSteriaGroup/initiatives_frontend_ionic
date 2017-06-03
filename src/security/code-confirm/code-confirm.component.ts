@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
-import {SecurityService} from '../security.service';
+import {IonicPage, NavController} from 'ionic-angular';
 import {HomePage} from '../../pages/home/home';
-import {MailConfirmComponent} from '../mail-confirm/mail-confirm.component';
+
+@IonicPage()
 @Component({
   selector: 'page-code-confirm',
   templateUrl: 'code-confirm.html',
@@ -11,7 +11,7 @@ import {MailConfirmComponent} from '../mail-confirm/mail-confirm.component';
 export class CodeConfirmComponent {
 
 
-  constructor(private _securityService: SecurityService, public navCtrl: NavController) {
+  constructor(public navCtrl: NavController) {
 
   }
 
@@ -20,7 +20,7 @@ export class CodeConfirmComponent {
   }
 
   back() {
-    this.navCtrl.push(MailConfirmComponent);
+    this.navCtrl.push('MailConfirmComponent');
   }
 
 

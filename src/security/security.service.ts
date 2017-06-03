@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {LinkedinUser} from './linkedinUser.model';
 import {Observable} from 'rxjs/Observable';
-import {Platform} from 'ionic-angular';
+import {App, NavController, Platform} from 'ionic-angular';
 import {appConst, linkedinConfig} from '../shared/constants';
 import {TokenModel} from './token.model';
 import {Storage} from '@ionic/storage';
@@ -17,15 +17,21 @@ export class SecurityService {
 
   private currentPlatform: Platform;
 
+  private linkedinTokenKey = 'linkedin_access';
+
   private tokenKey = 'ideas_oauth2_access';
 
   private token: TokenModel;
 
   private browser: InAppBrowser;
 
+  private nav: NavController;
+
   constructor(private platform: Platform,
               public storage: Storage,
-              private http: Http) {
+              private http: Http,
+              private app: App) {
+    this.nav = app.getActiveNav();
     this.currentPlatform = platform;
   }
 
@@ -34,27 +40,31 @@ export class SecurityService {
     return this._linkedinUser;
   }
 
-  login(): Observable<LinkedinUser> {
-    this.platform.ready().then(() => {
-      this.browser = new InAppBrowser(linkedinConfig.authorizationUrl +
-        '?client_id=' + linkedinConfig.client_id +
-        '&redirect_uri=' + linkedinConfig.redirect_uri
-        + '&response_type=code&access_type=offline', '_blank',
-        {
-          location: 'no',
-          clearcache: 'yes',
-          toolbar: 'no'
-        });
-      this.browser.on('loadstart').subscribe(
-        (event) => {
-          if ((event.url).startsWith(linkedinConfig.redirect_uri)) {
-            const requestToken = (event.url).split('code=')[1];
-            this.getAccessToken(requestToken);
-          }
-        },
-        err => alert(err));
-    });
-    return Observable.of(null);
+  login(): Observable<Response> {
+    this.browser = this.initBrowser();
+    return this.browser.on('loadstart')
+      .mergeMap(event => {
+        if ((event.url).startsWith(linkedinConfig.redirect_uri)) {
+          return this.getLinkedinAccessToken(this.getRequestToken(event));
+        }
+        return Observable.empty();
+      });
+  }
+
+  getRequestToken(event: any) {
+    const requestToken = (event.url).split('code=')[1];
+    this.browser.close();
+    return requestToken;
+  }
+
+  getLinkedinAccessToken(requestToken: string): Observable<Response> {
+    let headers = new Headers({'Host': 'www.linkedin.com', 'Content-Type': 'application/x-www-form-urlencoded'});
+    const options: RequestOptionsArgs = new RequestOptions({headers: headers});
+    let body = `grant_type=authorization_code&code=${requestToken}&redirect_uri=${linkedinConfig.redirect_uri}&client_id=${linkedinConfig.client_id}&client_secret=${linkedinConfig.client_secret}`;
+    return this.http.post(linkedinConfig.accessTokenUrl, body, options)
+      .do(res => this.storeToken(res, this.linkedinTokenKey))
+      .map(res => res.json())
+      .mergeMap((access_token) => this.accessToken(access_token));
   }
 
   //TODO clear cache
@@ -62,23 +72,33 @@ export class SecurityService {
 
   }
 
-  getAccessToken(requestToken: string) {
-    let headers = new Headers({'Host': 'www.linkedin.com', 'Content-Type': 'application/x-www-form-urlencoded'});
-    const options: RequestOptionsArgs = new RequestOptions({headers: headers});
-    let body = `grant_type=authorization_code&code=${requestToken}&redirect_uri=${linkedinConfig.redirect_uri}&client_id=${linkedinConfig.client_id}&client_secret=${linkedinConfig.client_secret}`;
-    this.http.post(linkedinConfig.accessTokenUrl, body, options).map(res => res.json())
-      .subscribe((data) => {
-        this.accessToken(data.access_token);
-      }, err => alert('err ' + err))
+  accessToken(access_token: string): Observable<Response> {
+    return this.http.post(appConst.urls.baseUri + '/api/authentication/tokens', {'accessToken': access_token})
+      .map(res => res.json());
   }
 
-  accessToken(access_token: string) {
-    alert(access_token);
-    this.browser.close();
-    this.http.post(appConst.urls.baseUri + '/api/tokens', {'accessToken': access_token}).subscribe(res => {
-      this.storeToken(res);
-      this.browser.close();
-    }, err => alert(err))
+  register(email: string): Observable<Response> {
+    return this.getLinkedinToken()
+      .mergeMap(token => {
+        alert('Register: ' + email);
+        alert('Linkedin AccessToken: ' + token);
+        return this.http.post(appConst.urls.baseUri + '/api/authentication/subscribe', {
+          'email': email,
+          'accessToken': token.access_token
+        })
+      })
+      .do(res => {
+        alert('RES' + res);
+        this.storeToken(res, this.tokenKey)
+      })
+      .catch(err => {
+        alert(err);
+        return Observable.empty();
+      });
+  }
+
+  getLinkedinToken(): Observable<TokenModel> {
+    return Observable.fromPromise(this.storage.get(this.linkedinTokenKey));
   }
 
   getToken(): TokenModel {
@@ -91,25 +111,36 @@ export class SecurityService {
   findAccessTokenOrRedirect(): Observable<any> {
     const token = this.getToken();
     if (!token) {
-      // this.navCtrl.setRoot(LoginComponent);
+      // redirect;
     }
     if (this.isTokenStillValid(token)) {
       return Observable.of(token.access_token);
     }
-    // this.navCtrl.setRoot(LoginComponent);
+  }
+
+  private initBrowser() {
+    return new InAppBrowser(linkedinConfig.authorizationUrl +
+      '?client_id=' + linkedinConfig.client_id +
+      '&redirect_uri=' + linkedinConfig.redirect_uri
+      + '&response_type=code&access_type=offline', '_blank',
+      {
+        location: 'no',
+        clearcache: 'yes',
+        toolbar: 'no'
+      });
   }
 
   isTokenStillValid(token: TokenModel = this.getToken()): boolean {
     return token && token.expires_at && moment(token.expires_at).isAfter(moment());
   }
 
-  private storeToken(res: Response): TokenModel {
+  private storeToken(res: Response, tokenKey: string): TokenModel {
     const token: TokenModel = res.json();
     token.expires_at = moment().add(token.expires_in, 's').toDate();
     if (!token.user_info) {
       token.user_info = token.access_token;
     }
-    this.storage.set(this.tokenKey, JSON.stringify(token));
+    this.storage.set(tokenKey, JSON.stringify(token)).then();
     return token;
   }
 

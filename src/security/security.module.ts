@@ -8,6 +8,9 @@ import {IonicModule} from 'ionic-angular';
 import {HttpModule} from '@angular/http';
 import {IonicStorageModule} from '@ionic/storage';
 import {AuthHttp} from './auth.http';
+import {MailConfirmModule} from './mail-confirm/mail-confirm.component.module';
+import {LoginModule} from './login/login.component.module';
+import {CodeConfirmModule} from './code-confirm/code-confirm.component.module';
 
 @NgModule({
   imports: [BrowserModule,
@@ -15,11 +18,11 @@ import {AuthHttp} from './auth.http';
     IonicModule.forRoot(MailConfirmComponent),
     IonicModule.forRoot(CodeConfirmComponent),
     IonicStorageModule.forRoot(),
-    HttpModule],
-  declarations: [LoginComponent, MailConfirmComponent, CodeConfirmComponent],
+    HttpModule, MailConfirmModule, LoginModule, CodeConfirmModule],
   providers: [SecurityService, AuthHttp],
   entryComponents: [
-    LoginComponent
+    LoginComponent,
+    MailConfirmComponent
   ],
 })
 export class SecurityModule {
