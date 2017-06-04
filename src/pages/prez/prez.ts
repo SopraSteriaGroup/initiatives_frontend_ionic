@@ -9,7 +9,7 @@ import {LoginComponent} from '../../security/login/login.component';
 export class PrezPage {
   slides = [
     {
-      title: 'Bienvenu sur SopraIdeas!',
+      title: 'Bienvenue sur SopraIdeas!',
       description: '<b>SopraIdeas</b> est une platforme pour partager des idées innovantes pour concevoir des applications.',
       image: 'assets/image/workforceInitiative.jpg',
       background: 'assets/image/background.jpg'
