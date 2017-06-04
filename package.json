@@ -20,6 +20,7 @@
     "@angular/http": "4.0.2",
     "@angular/platform-browser": "4.0.2",
     "@angular/platform-browser-dynamic": "4.0.2",
+    "@ionic-native/browser-tab": "^3.12.1",
     "@ionic-native/core": "3.11.0",
     "@ionic-native/in-app-browser": "3.11.0",
     "@ionic-native/splash-screen": "3.11.0",
@@ -28,8 +29,11 @@
     "@ionic/storage": "2.0.0",
     "cordova-android": "^6.2.3",
     "cordova-ios": "^4.4.0",
+    "cordova-plugin-browsertab": "^0.2.0",
+    "cordova-plugin-compat": "^1.0.0",
     "cordova-plugin-console": "1.0.5",
     "cordova-plugin-device": "1.1.4",
+    "cordova-plugin-inappbrowser": "^1.7.1",
     "cordova-plugin-linkedin": "^1.2.0",
     "cordova-plugin-splashscreen": "~4.0.1",
     "cordova-plugin-statusbar": "2.2.2",
@@ -55,7 +59,8 @@
     "cordova-plugin-device",
     "ionic-plugin-keyboard",
     "cordova-plugin-splashscreen",
-    "cordova-plugin-inappbrowser"
+    "cordova-plugin-inappbrowser",
+    "cordova-plugin-browsertab"
   ],
   "cordovaPlatforms": [],
   "description": "SopraIdeas: An Ionic project",
@@ -72,8 +77,9 @@
       "cordova-plugin-statusbar": {},
       "cordova-plugin-whitelist": {},
       "ionic-plugin-keyboard": {},
-      "cordova-plugin-inappbrowser": {},
-      "cordova-sqlite-storage": {}
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-browsertab": {},
+      "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
       "android",

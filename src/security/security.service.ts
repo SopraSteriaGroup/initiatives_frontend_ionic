@@ -45,7 +45,7 @@ export class SecurityService {
     return this.browser.on('loadstart')
       .mergeMap(event => {
         if ((event.url).startsWith(linkedinConfig.redirect_uri)) {
-          return this.getLinkedinAccessToken(this.getRequestToken(event));
+          return this.findLinkedinAccessToken(this.getRequestToken(event));
         }
         return Observable.empty();
       });
@@ -57,7 +57,7 @@ export class SecurityService {
     return requestToken;
   }
 
-  getLinkedinAccessToken(requestToken: string): Observable<Response> {
+  findLinkedinAccessToken(requestToken: string): Observable<Response> {
     let headers = new Headers({'Host': 'www.linkedin.com', 'Content-Type': 'application/x-www-form-urlencoded'});
     const options: RequestOptionsArgs = new RequestOptions({headers: headers});
     let body = `grant_type=authorization_code&code=${requestToken}&redirect_uri=${linkedinConfig.redirect_uri}&client_id=${linkedinConfig.client_id}&client_secret=${linkedinConfig.client_secret}`;
@@ -73,27 +73,23 @@ export class SecurityService {
   }
 
   accessToken(access_token: string): Observable<Response> {
-    return this.http.post(appConst.urls.baseUri + '/api/authentication/tokens', {'accessToken': access_token})
+    let headers = new Headers({'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded'});
+    const options: RequestOptionsArgs = new RequestOptions({headers: headers});
+    let body = `accessToken=${access_token}`;
+    return this.http.post(appConst.urls.baseUri + '/api/authentication/tokens', body, options)
       .map(res => res.json());
   }
 
   register(email: string): Observable<Response> {
     return this.getLinkedinToken()
-      .mergeMap(token => {
-        alert('Register: ' + email);
-        alert('Linkedin AccessToken: ' + token);
-        return this.http.post(appConst.urls.baseUri + '/api/authentication/subscribe', {
-          'email': email,
-          'accessToken': token.access_token
-        })
+      .mergeMap((token: TokenModel) => {
+        let headers = new Headers({'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded'});
+        const options: RequestOptionsArgs = new RequestOptions({headers: headers});
+        let body = `accessToken=${token.access_token}&email=${email}`;
+        return this.http.post(appConst.urls.baseUri + '/api/authentication/subscribe', body, options);
       })
       .do(res => {
-        alert('RES' + res);
         this.storeToken(res, this.tokenKey)
-      })
-      .catch(err => {
-        alert(err);
-        return Observable.empty();
       });
   }
 
@@ -140,7 +136,7 @@ export class SecurityService {
     if (!token.user_info) {
       token.user_info = token.access_token;
     }
-    this.storage.set(tokenKey, JSON.stringify(token)).then();
+    this.storage.set(tokenKey, token).then();
     return token;
   }
 

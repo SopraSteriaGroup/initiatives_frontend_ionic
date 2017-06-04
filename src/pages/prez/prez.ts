@@ -9,14 +9,14 @@ import {LoginComponent} from '../../security/login/login.component';
 export class PrezPage {
   slides = [
     {
-      title: 'Bienvenue sur SopraIdeas!',
-      description: '<b>SopraIdeas</b> est une platforme pour partager des idées innovantes pour concevoir des applications.',
+      title: 'Bienvenu sur SopraIdeas!',
+      description: '<b>SopraIdeas</b> est une platforme pour partager des idées innovantes afin de concevoir des applications.',
       image: 'assets/image/workforceInitiative.jpg',
       background: 'assets/image/background.jpg'
     },
     {
       title: 'Votre rôle ?',
-      description: 'Créateur ou Penseur ?',
+      description: 'Créateur ou Philosophe ?',
       image: 'assets/image/workforceInitiative.jpg',
       background: 'assets/image/background.jpg'
     },

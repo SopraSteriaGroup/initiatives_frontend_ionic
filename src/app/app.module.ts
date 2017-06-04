@@ -9,6 +9,7 @@ import {MyApp} from './app.component';
 import {HomePage} from '../pages/home/home';
 import {PrezPage} from '../pages/prez/prez';
 import {SecurityService} from '../security/security.service';
+import {BrowserTab} from '@ionic-native/browser-tab';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -39,7 +40,8 @@ const cloudSettings: CloudSettings = {
     SecurityService,
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    BrowserTab
   ]
 })
 export class AppModule {

@@ -21,6 +21,7 @@ export class LoginComponent {
       },
       err => {
         if (err.status === 401) {
+          alert('Aucun mail trouvé pour ce compte, merci d\'enregistrer votre mail');
           this.navCtrl.push(MailConfirmComponent);
         }
       });

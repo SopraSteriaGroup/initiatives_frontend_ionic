@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {IonicPage, NavController} from 'ionic-angular';
 import {CodeConfirmComponent} from '../code-confirm/code-confirm.component';
 import {SecurityService} from '../security.service';
@@ -9,7 +9,7 @@ import {SecurityService} from '../security.service';
   templateUrl: 'mail-confirm.html',
   styles: ['mail-confirm.scss']
 })
-export class MailConfirmComponent {
+export class MailConfirmComponent implements OnInit {
 
   email: string;
 
@@ -17,11 +17,15 @@ export class MailConfirmComponent {
 
   }
 
+  ngOnInit() {
+  }
+
   send() {
     this.securityService.register(this.email).subscribe((res) => {
       this.navCtrl.push(CodeConfirmComponent);
-    }, function (err) {
-      alert(err);
+    }, e => {
+      alert('Ce compte existe déjà, merci de le valider');
+      this.navCtrl.push(CodeConfirmComponent);
     });
   }
 
