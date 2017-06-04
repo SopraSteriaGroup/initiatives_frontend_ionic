@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {IonicPage, NavController} from 'ionic-angular';
 import {HomePage} from '../../pages/home/home';
+import {SecurityService} from '../security.service';
 
 @IonicPage()
 @Component({
@@ -11,12 +12,17 @@ import {HomePage} from '../../pages/home/home';
 export class CodeConfirmComponent {
 
 
-  constructor(public navCtrl: NavController) {
+  constructor(private securityService: SecurityService, public navCtrl: NavController) {
 
   }
 
   verify(code: string) {
-    this.navCtrl.push(HomePage);
+    this.securityService.verifyActivationCode(code).subscribe(res => {
+      alert(res);
+      this.navCtrl.push(HomePage);
+    }, error => {
+      alert(error);
+    });
   }
 
   back() {

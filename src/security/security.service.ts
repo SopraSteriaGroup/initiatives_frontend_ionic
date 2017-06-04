@@ -93,25 +93,27 @@ export class SecurityService {
       });
   }
 
+  verifyActivationCode(code: string): Observable<Response> {
+    return this.getToken()
+      .mergeMap((token: TokenModel) => {
+        let headers = new Headers({'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded'});
+        const options: RequestOptionsArgs = new RequestOptions({headers: headers});
+        let body = `Authorization=${token.access_token}&uuid=${code}`;
+        return this.http.post(appConst.urls.baseUri + '/api/authentication/activate', body, options);
+      });
+  }
+
   getLinkedinToken(): Observable<TokenModel> {
     return Observable.fromPromise(this.storage.get(this.linkedinTokenKey));
   }
 
-  getToken(): TokenModel {
-    Observable.fromPromise(this.storage.get(this.tokenKey)).subscribe((token) => {
-      this.token = token;
-    });
-    return this.token;
+  getToken(): Observable<TokenModel> {
+    return Observable.fromPromise(this.storage.get(this.tokenKey));
   }
 
-  findAccessTokenOrRedirect(): Observable<any> {
-    const token = this.getToken();
-    if (!token) {
-      // redirect;
-    }
-    if (this.isTokenStillValid(token)) {
-      return Observable.of(token.access_token);
-    }
+  findAccessTokenOrRedirect(): Observable<string> {
+    return Observable.fromPromise(this.storage.get(this.tokenKey)).mergeMap(token =>
+      Observable.of(this.isTokenStillValid(token) ? token.access_token : Observable.empty()));
   }
 
   private initBrowser() {
@@ -126,7 +128,7 @@ export class SecurityService {
       });
   }
 
-  isTokenStillValid(token: TokenModel = this.getToken()): boolean {
+  isTokenStillValid(token: TokenModel): boolean {
     return token && token.expires_at && moment(token.expires_at).isAfter(moment());
   }
 
