@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {LinkedinUser} from './linkedinUser.model';
+import {User} from './user.model';
 import {Observable} from 'rxjs/Observable';
 import {App, NavController, Platform} from 'ionic-angular';
 import {appConst, linkedinConfig} from '../shared/constants';
@@ -9,11 +9,12 @@ import * as moment from 'moment';
 import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from '@angular/http';
 import {InAppBrowser} from 'ionic-native';
 
+const jwtDecode = require('jwt-decode');
 
 @Injectable()
 export class SecurityService {
 
-  private _linkedinUser: LinkedinUser;
+  private _currentUser: User;
 
   private currentPlatform: Platform;
 
@@ -36,8 +37,8 @@ export class SecurityService {
   }
 
 
-  getCurrentLinkedinUser(): LinkedinUser {
-    return this._linkedinUser;
+  getCurrentUser(): User {
+    return this._currentUser;
   }
 
   login(): Observable<Response> {
@@ -64,19 +65,21 @@ export class SecurityService {
     return this.http.post(linkedinConfig.accessTokenUrl, body, options)
       .do(res => this.storeToken(res, this.linkedinTokenKey))
       .map(res => res.json())
-      .mergeMap((access_token) => this.accessToken(access_token));
+      .mergeMap((token) => this.accessToken(token));
   }
 
-  //TODO clear cache
   logout() {
-
+    this.storage.remove(this.linkedinTokenKey);
+    this.storage.remove(this.tokenKey);
+    //TODO Redirect
   }
 
-  accessToken(access_token: string): Observable<Response> {
+  accessToken(tokenLinkedin: TokenModel): Observable<Response> {
     let headers = new Headers({'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded'});
     const options: RequestOptionsArgs = new RequestOptions({headers: headers});
-    let body = `accessToken=${access_token}`;
+    let body = `accessToken=${tokenLinkedin.access_token}`;
     return this.http.post(appConst.urls.baseUri + '/api/authentication/tokens', body, options)
+      .do(res => this.storeToken(res, this.tokenKey))
       .map(res => res.json());
   }
 
@@ -93,13 +96,17 @@ export class SecurityService {
       });
   }
 
-  verifyActivationCode(code: string): Observable<Response> {
+  verifyActivationCode(uuid: string): Observable<Response> {
     return this.getToken()
       .mergeMap((token: TokenModel) => {
-        let headers = new Headers({'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded'});
-        const options: RequestOptionsArgs = new RequestOptions({headers: headers});
-        let body = `Authorization=${token.access_token}&uuid=${code}`;
-        return this.http.post(appConst.urls.baseUri + '/api/authentication/activate', body, options);
+        let headers = new Headers({
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token.access_token}`
+        });
+        const options: RequestOptionsArgs = new RequestOptions({headers: headers,});
+        let body = `uuid=${uuid}`;
+        return this.http.put(appConst.urls.baseUri + '/api/authentication/activate', body, options);
       });
   }
 
@@ -140,6 +147,12 @@ export class SecurityService {
     }
     this.storage.set(tokenKey, token).then();
     return token;
+  }
+
+
+  private mapUser(userInfo: String): User {
+    const plainToken = jwtDecode(userInfo);
+    return new User(plainToken.user_name, plainToken.full_name, plainToken.authorities, plainToken.profile_picture, plainToken.emailAddress);
   }
 
 }

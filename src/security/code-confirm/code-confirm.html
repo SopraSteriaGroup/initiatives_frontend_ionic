@@ -10,12 +10,12 @@
 
     <ion-item>
       <ion-label floating>Code reçu par mail</ion-label>
-      <ion-input type="text" #code></ion-input>
+      <ion-input type="text" [(ngModel)]="uuid"></ion-input>
     </ion-item>
   </ion-list>
 
   <div padding>
-    <button (click)="verify(code)" ion-button color="primary" block>Vérifier</button>
+    <button (click)="verifyActivationCode(code)" ion-button color="primary" block>Vérifier</button>
     <button (click)="back()" ion-button color="light" block>Renvoyer le mail</button>
   </div>
 

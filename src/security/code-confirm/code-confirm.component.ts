@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {IonicPage, NavController} from 'ionic-angular';
-import {HomePage} from '../../pages/home/home';
+import {HomePage} from '../../pages/home/home.page';
 import {SecurityService} from '../security.service';
 
 @IonicPage()
@@ -11,17 +11,17 @@ import {SecurityService} from '../security.service';
 })
 export class CodeConfirmComponent {
 
+  uuid: string;
 
   constructor(private securityService: SecurityService, public navCtrl: NavController) {
 
   }
 
-  verify(code: string) {
-    this.securityService.verifyActivationCode(code).subscribe(res => {
-      alert(res);
+  verifyActivationCode() {
+    this.securityService.verifyActivationCode(this.uuid).subscribe(res => {
       this.navCtrl.push(HomePage);
     }, error => {
-      alert(error);
+      alert(JSON.stringify(error));
     });
   }
 
