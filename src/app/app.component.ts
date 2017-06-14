@@ -9,6 +9,7 @@ import {PrezPage} from '../pages/prez/prez';
   templateUrl: 'app.html'
 })
 export class MyApp {
+
   rootPage: any = PrezPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
@@ -18,5 +19,6 @@ export class MyApp {
       statusBar.styleDefault();
       splashScreen.hide();
     });
+
   }
 }

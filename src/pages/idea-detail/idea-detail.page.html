@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Détail d'une SoprIdée
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <ion-row>
+        <ion-col col-8>
+          <h1>{{ideaDetail.name}}</h1>
+          <p>{{ideaDetail.pitch}}</p>
+        </ion-col>
+        <ion-col col-4>
+          <img class="logoDetail" [src]="ideaDetail.logo">
+          <button ion-button color="secondary">started</button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-10>
+          <h1>Catégorie</h1>
+          <p>{{ideaDetail.category}}</p>
+        </ion-col>
+        <ion-col col-2>
+          <ion-icon name="thumbs-up"></ion-icon>
+          <div>{{ideaDetail.likes}}</div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-10>
+          <h1>Porteur</h1>
+          <img class="founderAvatar" [src]="ideaDetail.founder.avatar">
+          <p>{{ideaDetail.founder.firstName + " " + ideaDetail.founder.lastName}}</p>
+        </ion-col>
+        <ion-col col-2></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-10>
+          <h1>Equipe</h1>
+          <img *ngFor="let member of ideaDetail.members" class="contactLogo" [src]="member.avatar">
+        </ion-col>
+        <ion-col col-2></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-8>
+          <h1>Actions</h1>
+          <ul>
+            <li>Tache 1</li>
+            <li>Tache 2</li>
+            <li>Tache 3</li>
+          </ul>
+        </ion-col>
+        <ion-col col-4>
+          <img class="contactLogo" src="assets/icon/trello-icon.jpg"/>
+          <img class="contactLogo" src="assets/icon/slack-icon.jpg"/>
+          <img class="contactLogo" src="assets/icon/github-icon.jpg"/>
+        </ion-col>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

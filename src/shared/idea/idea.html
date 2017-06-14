@@ -1,0 +1,24 @@
+<ion-card>
+  <ion-item>
+    <img class="logo" [src]="idea.logo">
+    <h2>{{idea.name}}</h2>
+  </ion-item>
+
+  <ion-card-content>
+    <p>{{idea.pitch}}</p>
+  </ion-card-content>
+
+  <ion-row>
+    <ion-col>
+      <button ion-button icon-left clear small>
+        <ion-icon name="thumbs-up"></ion-icon>
+        <div>{{idea.likes}} Likes</div>
+      </button>
+    </ion-col>
+    <ion-col center text-center>
+      <ion-note>
+        Il y a 1h
+      </ion-note>
+    </ion-col>
+  </ion-row>
+</ion-card>

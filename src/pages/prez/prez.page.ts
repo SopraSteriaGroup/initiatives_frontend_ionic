@@ -4,12 +4,12 @@ import {LoginComponent} from '../../security/login/login.component';
 
 @Component({
   selector: 'page-prez',
-  templateUrl: 'prez.html'
+  templateUrl: 'prez.page.html'
 })
 export class PrezPage {
   slides = [
     {
-      title: 'Bienvenu sur SopraIdeas!',
+      title: 'Bienvenue sur SopraIdeas!',
       description: '<b>SopraIdeas</b> est une platforme pour partager des idées innovantes afin de concevoir des applications.',
       image: 'assets/image/workforceInitiative.jpg',
       background: 'assets/image/background.jpg'

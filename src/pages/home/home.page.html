@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Accueil
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  <div *ngFor="let idea of ideas">
+    <div (click)="detail(idea)">
+      <component-idea [idea]="idea"></component-idea>
+    </div>
+  </div>
+  <ion-fab bottom right>
+    <button ion-fab style="background-color: #488aff" (click)="add()">
+      <ion-icon name="md-create"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>
