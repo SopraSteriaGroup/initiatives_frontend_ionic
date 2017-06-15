@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from '@angular/http';
 import {InAppBrowser} from 'ionic-native';
 
+declare var require: any;
 const jwtDecode = require('jwt-decode');
 
 @Injectable()
@@ -21,8 +22,6 @@ export class SecurityService {
   private linkedinTokenKey = 'linkedin_access';
 
   private tokenKey = 'ideas_oauth2_access';
-
-  private token: TokenModel;
 
   private browser: InAppBrowser;
 

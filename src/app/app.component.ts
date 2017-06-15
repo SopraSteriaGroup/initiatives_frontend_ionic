@@ -2,8 +2,7 @@ import {Component} from '@angular/core';
 import {Platform} from 'ionic-angular';
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
-
-import {PrezPage} from '../pages/prez/prez';
+import {PrezPage} from '../pages/prez/prez.page';
 
 @Component({
   templateUrl: 'app.html'
